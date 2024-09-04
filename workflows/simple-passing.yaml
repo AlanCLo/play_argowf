@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: output-artifact-s3-
+spec:
+  entrypoint: whalesay
+  templates:
+  - name: whalesay
+    container:
+      image: alpine
+      command: 
+      - /bin/sh
+      - -c
+      - |
+        echo "this should have been whalesay but it couldn't pull it" | tee /tmp/hello_world.txt
+
+      # image: docker/whalesay:latest
+      # command: [sh, -c]
+      # args: ["cowsay hello world | tee /tmp/hello_world.txt"]
+    outputs:
+      artifacts:
+      - name: message
+        path: /tmp/hello_world.txt
+        archive:
+          none: {}
+        s3:
+          key: hello_world.txt

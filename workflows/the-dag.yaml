@@ -1,0 +1,43 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: the-dag
+  namespace: argo
+spec:
+  arguments:
+    parameters:
+      - name: message
+        description: hello world
+      - name: inputDate
+        description: asdf
+      - name: inputBool
+        description: asdf
+      - name: parsedDate
+        value: "{{=sprig.date('2006-01-02T15:04:05 MST', inputs.parameters.inputDate)}}"
+      - name: parsedEpoch
+        value: "{{=sprig.unixEpoch(sprig.toDate('2006-01-02T15:04:05 MST', inputs.parameters.inputDate))}}"
+      - name: nowEpoch
+        value: "{{=sprig.unixEpoch(sprig.now())}}"
+  entrypoint: print-message
+  templates:
+    - name: print-message
+      inputs:
+        parameters:
+          - name: message
+          - name: inputDate
+          - name: parsedDate
+          - name: parsedEpoch
+          - name: nowEpoch
+      container:
+        image: alpine
+        command: 
+        - /bin/sh
+        - -c
+        - |
+          echo message "{{inputs.parameters.message}}"
+          echo inputDate "{{inputs.parameters.inputDate}}" # AEST/AEDT
+          echo parsedDate "{{inputs.parameters.parsedDate}}" # UTC
+          echo parsedEpoch "{{inputs.parameters.parsedEpoch}}" # num
+          echo nowEpoch "{{inputs.parameters.nowEpoch}}" # num
+

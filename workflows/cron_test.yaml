@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: CronWorkflow
+metadata:
+  name: cron-test
+  namespace: argo
+spec:
+  schedule: "* * * * *"
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 0
+  workflowSpec:
+    arguments:
+      parameters:
+        - name: message
+          value: what what
+        - name: inputDate
+          value: false
+          # value: "2024-09-02T13:36:12 AEST"
+        - name: inputBool
+          value: false
+    workflowTemplateRef:
+      name: the-dag

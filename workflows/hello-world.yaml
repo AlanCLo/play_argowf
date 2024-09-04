@@ -1,0 +1,25 @@
+
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: hello-world-
+  labels:
+    workflows.argoproj.io/archive-strategy: "false"
+  annotations:
+    workflows.argoproj.io/description: |
+      This is a simple hello world example.
+      You can also run it in Python: https://couler-proj.github.io/couler/examples/#hello-world
+spec:
+  entrypoint: whalesay
+  templates:
+  - name: whalesay
+    container:
+      image: alpine
+      command: 
+      - /bin/sh
+      - -c
+      - |
+        echo "this should have been whalesay but it couldn't pull it"
+    #     echo "echo $TIME_IS"
+    # env:
+    #   - TIME_IS: {{ workflow.name }}
